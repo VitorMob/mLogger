@@ -4,9 +4,7 @@
 #include <stdio.h>
 #include <fcntl.h>
 
-
-
-#define ARENA_ALLOCATION  2048
+#define ARENA_ALLOCATION 2048
 
 class FileDescriptorManage
 {

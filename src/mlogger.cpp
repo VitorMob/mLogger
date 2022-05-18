@@ -1,56 +1,102 @@
 #include "include/mlogger.hpp"
-#include <stdarg.h>
 
-#define format(p_format , ...) va_list args; 
+#include <iostream>
 
 mLogger::mLogger()
 {
-
 }
 
-mLogger::mLogger ( const char *__restrict__ p_path, bool p_in_memory )
+mLogger::mLogger(const char *p_path, int p_flags, bool p_in_memory) : m_in_memory(p_in_memory)
 {
-  m_fileLog.Open ( p_path,  O_CREAT | O_RDWR );
+  m_fileLog.Open(p_path, p_flags);
+  if (p_in_memory)
+  {
+    fast.realloc(sysconf(_SC_PAGESIZE));
+  }
 }
 
-mLogger::mLogger ( const std::string &p_path, bool p_in_memory )
+mLogger::mLogger(const std::string &p_path, int p_flags, bool p_in_memory) : m_in_memory(p_in_memory)
 {
-  m_fileLog.Open ( p_path.data(), O_CREAT );
+  m_fileLog.Open(p_path.data(), p_flags);
 }
 
 mLogger::~mLogger()
 {
-
 }
 
-void mLogger::mlogger_warning ( const std::string &p_msg, ... )
+void mLogger::mlogger_warning(const std::string &p_msg)
 {
-  m_msg = WARNING + p_msg + '\n';
-  m_fileLog.Write ( m_msg.data(), m_msg.size() );
+  int lenght = p_msg.size() + sizeof(WARNING);
+  const char *warning =  WARNING;
+
+  char *msg = (char *)fast.req(lenght);
+
+  strcpy(msg, warning);
+  strcat(msg, p_msg.c_str());
+
+  if (!m_in_memory)
+    m_fileLog.Write(msg, lenght);
+  else
+    std::cout << msg  << '\n';
 }
 
-void mLogger::mlogger_information ( const std::string &p_msg, ... )
+void mLogger::mlogger_information(const std::string &p_msg)
 {
-  m_msg = INFORMATION + p_msg + '\n';
-  format(m_msg, ...);
-  m_fileLog.Write ( m_msg.data(), m_msg.size() );
+  int lenght = p_msg.size() + sizeof(INFORMATION);
+  const char *information = INFORMATION;
+
+  char *msg = (char *)fast.req(lenght);
+
+  strcpy(msg, information);
+  strcat(msg, p_msg.c_str());
+
+  if (!m_in_memory)
+    m_fileLog.Write(msg, lenght);
+  else
+    std::cout << msg << '\n';
 }
 
-void mLogger::mlogger_about ( const std::string &p_msg, ... )
+void mLogger::mlogger_about(const std::string &p_msg)
 {
-  m_msg = ABOUT + p_msg + '\n';
-  m_fileLog.Write ( m_msg.data(), m_msg.size() );
+  int lenght = p_msg.size() + sizeof(ABOUT);
+  const char *about = ABOUT;
+
+  char *msg = (char *)fast.req(lenght);
+
+  strcpy(msg, about);
+  strcat(msg, p_msg.c_str());
+
+  if (!m_in_memory)
+    m_fileLog.Write(msg, lenght);
+  else
+    std::cout << msg << '\n';
 }
 
-void mLogger::mlogger_load_log ( const char *&__restrict__ p_path )
+void mLogger::mlogger_error(const std::string &p_msg)
+{
+  int lenght = p_msg.size() + sizeof(ERROR);
+  const char *error = ERROR;
+
+  char *msg = (char *)fast.req(lenght);
+
+  strcpy(msg, error);
+  strcat(msg, p_msg.c_str());
+
+  if (!m_in_memory)
+    m_fileLog.Write(msg, lenght);
+  else
+    std::cout << msg << '\n';
+}
+
+void mLogger::mlogger_load_log(const char *&p_path)
 {
   FileDescriptorManage fileLoad;
 
-  fileLoad.Open ( p_path, O_RDONLY );
-  m_fileLog.Write ( fileLoad.Read(), fileLoad.Size() );
+  fileLoad.Open(p_path, O_RDONLY);
+  m_fileLog.Write(fileLoad.Read(), fileLoad.Size());
 }
 
-void mLogger::mlogger_set_file ( const char *&__restrict__ p_path )
+void mLogger::mlogger_set_file(const char *&p_path, int p_flags)
 {
-  m_fileLog.Open ( p_path, O_CREAT );
+  m_fileLog.Open(p_path, p_flags);
 }

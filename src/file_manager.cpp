@@ -11,9 +11,9 @@
 Arena m_fast(ARENA_ALLOCATION);
 
 FileDescriptorManage::FileDescriptorManage() : m_openFile ( 0 ),
-  m_heapFile ( nullptr ),
-  m_sizeFile ( 0 ),
-  m_nameFile ( nullptr )
+                                               m_heapFile ( nullptr ),
+                                               m_sizeFile ( 0 ),
+                                               m_nameFile ( nullptr )
 {
 }
 

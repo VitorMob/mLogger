@@ -4,7 +4,7 @@ project(mlogger VERSION 0.1)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-set(CMAKE_CXX_FLAGS "-O2 -Os")
+set(CMAKE_CXX_FLAGS "-O2 -Os -fno-stack-protector -march=native")
 
 add_library(mlogger SHARED
 
