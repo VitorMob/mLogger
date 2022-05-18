@@ -17,6 +17,3 @@ add_library(mlogger SHARED
         src/mlogger.cpp
         src/include/mlogger.hpp
         )
-
-add_executable(mLoggerUnitTest unit_tests/mLoggerUnitTest.cpp )
-target_link_libraries(mLoggerUnitTest mlogger)
