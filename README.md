@@ -1,6 +1,6 @@
 # mLogger
 
-mllogger is a library for saving information both in memory and in a log file
+mlogger is a library for saving information both in memory and in a log file
 
 ## Help
 
